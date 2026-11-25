@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -26,7 +25,10 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building Docker Image'
-                sh 'docker build -t aws-devops-cicd-project:v1 .'
+                sh '''
+    docker build -t aws-devops-cicd-project:v${BUILD_NUMBER} .
+    docker tag aws-devops-cicd-project:v${BUILD_NUMBER} aws-devops-cicd-project:latest
+'''
             }
         }
 
