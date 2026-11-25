@@ -40,7 +40,7 @@ pipeline {
                     docker run -d \
                     --name aws-devops-cicd-container \
                     -p 8050:8050 \
-                    aws-devops-cicd-project:v1
+                    aws-devops-cicd-project:v${BUILD_NUMBER}
                 '''
             }
         }
@@ -65,4 +65,3 @@ pipeline {
         }
     }
 }
-

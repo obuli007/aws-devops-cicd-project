@@ -191,11 +191,11 @@ Responsibilities:
 
 Contains Python dependencies required by the application.
 
-Example:
+The project currently requires:
 
 ```text
-flask
-pytest
+Flask>=3.0,<4.0
+pytest>=8.0,<10.0
 ```
 
 ### test_app.py
@@ -433,7 +433,7 @@ Jenkinsfile
 
 Purpose:
 
-To retrieve the latest source code from GitHub.
+Jenkins Declarative Pipeline performs the default source checkout before the stages when the job is configured from SCM. The named `Checkout` stage in this Jenkinsfile currently logs that checkout is complete.
 
 ### Stage 2: Test
 
@@ -445,13 +445,13 @@ To execute Pytest test cases and verify the application before deployment.
 
 Purpose:
 
-To build a Docker image using the Dockerfile.
+To build a Docker image using the Dockerfile. Jenkins tags the image as `aws-devops-cicd-project:v${BUILD_NUMBER}` and also updates the `latest` tag.
 
 ### Stage 4: Deploy
 
 Purpose:
 
-To deploy the application inside a Docker container.
+To replace the existing application container and run the image built in the current Jenkins build (`aws-devops-cicd-project:v${BUILD_NUMBER}`) on port 8050.
 
 ### Stage 5: Health Check
 
@@ -754,7 +754,7 @@ This confirms that both configured test cases completed successfully.
 | Container Platform | Docker |
 | Cloud Platform | AWS EC2 |
 | Container Name | aws-devops-cicd-container |
-| Docker Image | aws-devops-cicd-project:v1 |
+| Docker Image | `aws-devops-cicd-project:v1` for the manual Docker example; Jenkins uses `aws-devops-cicd-project:v${BUILD_NUMBER}` |
 | Application Port | 8050 |
 
 ## Verify Application
@@ -815,7 +815,7 @@ GitHub sends a webhook notification to Jenkins.
 
 **Step 4 – Jenkins Checkout**
 
-Jenkins retrieves the latest repository contents.
+Jenkins Declarative Pipeline checks out the configured repository before running the stages.
 
 **Step 5 – Automated Testing**
 
@@ -823,11 +823,11 @@ Jenkins executes the Pytest test cases.
 
 **Step 6 – Docker Image Build**
 
-Jenkins builds the application Docker image.
+Jenkins builds `aws-devops-cicd-project:v${BUILD_NUMBER}` and updates the `latest` tag.
 
 **Step 7 – Docker Deployment**
 
-Jenkins deploys the application inside a Docker container.
+Jenkins deploys the build-number-tagged image inside the application container on port 8050.
 
 **Step 8 – Health Verification**
 
